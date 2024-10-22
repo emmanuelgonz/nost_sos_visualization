@@ -36,6 +36,18 @@ npm -v
 
 > **Note:** You will see the installed version number of node and npm if the installation was successful.
 
+- Clone GitHub repo:
+
+```bash
+git clone git@github.com:emmanuelgonz/nost_sos_visualization.git
+```
+
+- Navigate to cloned repo:
+
+```bash
+cd nost_sos_visualization
+```
+
 - Install dependencies:
 
 ```bash
