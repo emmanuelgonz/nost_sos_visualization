@@ -4,12 +4,10 @@ This project delivers a 3D visualization web application that receives and proce
 
 ## Demo
 
-<div style="position: relative; text-align: center;">
-    <a href="https://www.youtube.com/watch?v=zKBMltZmC8g" target="_blank">
-        <img src="images/image.png" alt="Watch the video" style="width: 100%; max-width: 600px; height: auto;">
-        <img src="play-button.png" alt="Play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px;">
-    </a>
-</div>
+<video width="600" controls>
+  <source src="nost_sos_demonstration_cones_layers_compressed.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ## Preparation
 
