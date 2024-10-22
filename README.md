@@ -4,9 +4,7 @@ This project delivers a 3D visualization web application that receives and proce
 
 ## Demo
 
-<!-- [![Watch the video](media/image.png)](https://youtu.be/zKBMltZmC8g) -->
-
-[![YouTube](http://i.ytimg.com/vi/zKBMltZmC8g/hqdefault.jpg)](https://www.youtube.com/watch?v=zKBMltZmC8g)
+[![Watch the video](media/image.png)](https://youtu.be/zKBMltZmC8g)
 
 ## Preparation
 
