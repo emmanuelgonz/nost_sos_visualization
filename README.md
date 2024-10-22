@@ -4,9 +4,7 @@ This project delivers a 3D visualization web application that receives and proce
 
 ## Demo
 
-<a href="https://www.youtube.com/watch?v=zKBMltZmC8g" target="_blank">
-    <img src="https://img.youtube.com/vi/zKBMltZmC8g/hqdefault.jpg" alt="Watch the video" width="600" height="300">
-</a>
+<iframe width="600" height="300" src="https://www.youtube.com/embed/zKBMltZmC8g?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 ## Preparation
 
