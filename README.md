@@ -31,5 +31,5 @@ npm install
 Start application:
 
 ```
-npm start
+node server.js
 ```
