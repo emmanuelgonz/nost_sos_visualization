@@ -4,9 +4,13 @@ This project delivers a 3D visualization web application that receives and proce
 
 ## Demo
 
-[![Watch the video](media/image.png)](https://youtu.be/zKBMltZmC8g)
+<!-- [![Watch the video](media/image.png)](https://youtu.be/zKBMltZmC8g) -->
 
-> **Note:** Click image above to watch the demonstration.
+<a href="https://youtu.be/zKBMltZmC8g" target="_blank">
+  <img src="media/image.png" alt="Watch the video" />
+</a>
+
+> **Note:** Click the image above with the white play icon to watch the demonstration.
 
 ## Preparation
 
