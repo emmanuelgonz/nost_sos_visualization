@@ -15,22 +15,25 @@ This project delivers a 3D visualization web application that receives and proce
 ## Preparation
 
 - Install Node.JS on Linux:
-```
+
+```bash
 sudo apt update && sudo apt install nodejs && sudo apt install npm
 ```
 
 For Windows and macOS instructions, refer to [Download Node.js](https://nodejs.org/en/download/package-manager).
 
 - Confirm installation:
-```
+
+```bash
 node -v
 npm -v
 ```
+
 > **Note:** You will see the installed version number of node and npm if the installation was successful.
 
 - Install dependencies:
 
-```
+```bash
 npm install
 ```
 
@@ -38,6 +41,6 @@ npm install
 
 Start application:
 
-```
+```bash
 node server.js
 ```
