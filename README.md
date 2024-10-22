@@ -13,6 +13,8 @@ This project delivers a 3D visualization web application that receives and proce
 sudo apt update && sudo apt install nodejs && sudo apt install npm
 ```
 
+For Windows and macOS instructions, refer to [Download Node.js](https://nodejs.org/en/download/package-manager).
+
 - Confirm installation:
 ```
 node -v
