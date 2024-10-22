@@ -2,15 +2,20 @@
 
 This project delivers a 3D visualization web application that receives and processes messages sent through the Novel Observing Strategies Testbed (NOS-T) event broker.
 
-## Demo
-
-<!-- [![Watch the video](media/image.png)](https://youtu.be/zKBMltZmC8g) -->
-
 <a href="https://youtu.be/zKBMltZmC8g" target="_blank">
   <img src="media/image.png" alt="Watch the video" />
 </a>
 
 > **Note:** Click the image above with the white play icon to watch the demonstration.
+
+## Table of Contents
+
+- [Preparation](#preparation)
+- [Run Application](#run-application)
+- [Project Structure](#project-structure)
+- [Dependencies](#dependencies)
+<!-- - [Contributing](#contributing)
+- [License](#license) -->
 
 ## Preparation
 
@@ -37,6 +42,29 @@ npm -v
 npm install
 ```
 
+- Create Cesium account:
+
+Sign up for a free Cesium ion account [here](https://ion.cesium.com/signup). Then, copy your access token [here](https://ion.cesium.com/tokens?).
+
+- Create env.js file
+
+```bash
+touch env.js
+```
+
+To the file, add the contents: 
+
+```
+var HOST="nost.smce.nasa.gov"
+var RABBITMQ_PORT=15670
+var KEYCLOAK_PORT=8443
+var CLIENT_ID=<request from NOS-T administrators>
+var CLIENT_SECRET=<request from NOS-T administrators>
+var USERNAME=<request from NOS-T administrators>
+var PASSWORD=<request from NOS-T administrators>
+var TOKEN=<Cesium access token>
+```
+
 ## Run Application
 
 Start application:
@@ -44,3 +72,19 @@ Start application:
 ```bash
 node server.js
 ```
+
+## Project Structure
+
+- server.js: Main server file.
+- env.js: Environment configuration.
+- js/: JavaScript modules.
+- media/: Media assets.
+- public/: Publicly accessible files.
+- spatial/: GeoJSON files for spatial data.
+
+## Dependencies
+
+The project relies on the following dependencies: 
+
+- [Cesium](https://cesium.com/platform/cesiumjs/)
+- [Express](https://expressjs.com/)
