@@ -5,7 +5,7 @@ This project delivers a 3D visualization web application that receives and proce
 ## Demo
 
 <video width="600" controls>
-  <source src="./media/nost_sos_demonstration_cones_layers_compressed.mp4" type="video/mp4">
+  <source src="media/nost_sos_demonstration_cones_layers_compressed.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
