@@ -19,6 +19,8 @@ This project delivers a 3D visualization web application that receives and proce
 
 ## Preparation
 
+### Node.JS Installation
+
 - Install Node.JS on Linux:
 
 ```bash
@@ -36,6 +38,8 @@ npm -v
 
 > **Note:** You will see the installed version number of node and npm if the installation was successful.
 
+### Cloning Repo
+
 - Clone GitHub repo:
 
 ```bash
@@ -48,15 +52,21 @@ git clone git@github.com:emmanuelgonz/nost_sos_visualization.git
 cd nost_sos_visualization
 ```
 
+### Install NPM dependencies
+
 - Install dependencies:
 
 ```bash
 npm install
 ```
 
+### Preparing Cesium
+
 - Create Cesium account:
 
 Sign up for a free Cesium ion account [here](https://ion.cesium.com/signup). Then, copy your access token [here](https://ion.cesium.com/tokens?).
+
+### Credentials
 
 - Create env.js file
 
