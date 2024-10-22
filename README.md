@@ -4,10 +4,9 @@ This project delivers a 3D visualization web application that receives and proce
 
 ## Demo
 
-<video width="600" controls>
-  <source src="media/nost_sos_demonstration_cones_layers_compressed.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+<!-- [![Watch the video](media/image.png)](https://youtu.be/zKBMltZmC8g) -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zKBMltZmC8g?si=AVcFzTyTf3k03_Uv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Preparation
 
