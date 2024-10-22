@@ -104,6 +104,26 @@ node server.js
 - public/: Publicly accessible files.
 - spatial/: GeoJSON files for spatial data.
 
+A directory tree is provided below:
+
+```
+├── README.md
+├── env.js 
+├── js
+│   └── amqp-websocket-client.mjs
+├── media
+│   ├── image.png
+│   └── nost_sos_demonstration_cones_layers_compressed.mp4
+├── package-lock.json
+├── package.json
+├── public
+│   └── index.html
+├── server.js
+└── spatial
+    ├── Optimization_result.geojson
+    └── WBD_10_HU2_4326.geojson
+```
+
 ## Dependencies
 
 The project relies on the following dependencies: 
