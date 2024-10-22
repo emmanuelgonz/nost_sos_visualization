@@ -6,6 +6,8 @@ This project delivers a 3D visualization web application that receives and proce
 
 [![Watch the video](media/image.png)](https://youtu.be/zKBMltZmC8g)
 
+> **Note:** Click image above to watch the demonstration.
+
 ## Preparation
 
 - Install Node.JS on Linux:
