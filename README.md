@@ -4,11 +4,8 @@ This project delivers a 3D visualization web application that receives and proce
 
 ## Demo
 
-<div style="text-align: center;">
-    <a href="https://www.youtube.com/watch?v=zKBMltZmC8g" target="_blank">
-        <img src="https://img.youtube.com/vi/zKBMltZmC8g/hqdefault.jpg" alt="Watch the video" style="width: 100%; max-width: 600px; height: auto;">
-    </a>
-</div>
+
+[![Watch the video](https://img.youtube.com/vi/)](https://www.youtube.com/watch?v=zKBMltZmC8g)
 
 ## Preparation
 
