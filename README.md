@@ -89,10 +89,20 @@ var TOKEN=<Cesium access token>
 
 ## Run Application
 
+### NodeJS file
+
 Start application:
 
 ```bash
 node server.js
+```
+
+### Docker
+
+Start docker container: 
+
+```bash
+docker-compose up --build
 ```
 
 ## Project Structure
