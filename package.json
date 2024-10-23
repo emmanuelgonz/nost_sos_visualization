@@ -1,17 +1,17 @@
 {
-  "name": "cesium-app",
+  "name": "nost_sos_visualization",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "This project delivers a 3D visualization web application that receives and processes messages sent through the Novel Observing Strategies Testbed (NOS-T) event broker.",
+  "main": "env.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "cesium": "^1.122.0",
-    "dotenv": "^16.4.5",
     "express": "^4.21.1"
   }
 }
