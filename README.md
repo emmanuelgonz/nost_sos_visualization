@@ -80,7 +80,7 @@ To the file, add the contents:
 var HOST="nost.smce.nasa.gov"
 var RABBITMQ_PORT=15670
 var KEYCLOAK_PORT=8443
-var CLIENT_ID=<request from NOS-T administrators> // **<request from NOS-T administrators>**
+var CLIENT_ID=<request from NOS-T administrators>
 var CLIENT_SECRET=<request from NOS-T administrators>
 var USERNAME=<request from NOS-T administrators>
 var PASSWORD=<request from NOS-T administrators>
