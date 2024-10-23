@@ -80,7 +80,7 @@ To the file, add the contents:
 var HOST="nost.smce.nasa.gov"
 var RABBITMQ_PORT=15670
 var KEYCLOAK_PORT=8443
-var CLIENT_ID=<request from NOS-T administrators>
+var CLIENT_ID=**<request from NOS-T administrators>**
 var CLIENT_SECRET=<request from NOS-T administrators>
 var USERNAME=<request from NOS-T administrators>
 var PASSWORD=<request from NOS-T administrators>
@@ -97,14 +97,16 @@ node server.js
 
 ## Project Structure
 
-- server.js: Main server file.
 - env.js: Environment configuration.
 - js/: JavaScript modules.
 - media/: Media assets.
+- package-lock.json: Locks the versions of the dependencies and their sub-dependencies.
+- package.json: Contains metadata about the project, including the project's dependencies and their versions.
 - public/: Publicly accessible files.
+- server.js: Main server file.
 - spatial/: GeoJSON files for spatial data.
 
-A directory tree is provided below:
+A directory tree structure is provided below:
 
 ```
 ├── README.md
@@ -126,7 +128,7 @@ A directory tree is provided below:
 
 ## Dependencies
 
-The project relies on the following dependencies: 
+The project depends on the previously installed dependencies:
 
 - [Cesium](https://cesium.com/platform/cesiumjs/)
 - [Express](https://expressjs.com/)
