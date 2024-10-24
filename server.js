@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 app.get('/env', (req, res) => {
     res.json({
         HOST: process.env.HOST,
-        RABBITMQ_PORT: process.env.RABBITMQ_PORT,
+        RABBITMQ_RELAY_PORT: process.env.RABBITMQ_RELAY_PORT,
         KEYCLOAK_PORT: process.env.KEYCLOAK_PORT,
         CLIENT_ID: process.env.CLIENT_ID,
         CLIENT_SECRET: process.env.CLIENT_SECRET_KEY,
