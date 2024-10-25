@@ -118,13 +118,13 @@ Include the following in your docker-compose.yml
 ```bash
 services:
   nost-sos:
-    image: emmanuelgonzalez/nost_sos_visualization
+    image: emmanuelgonzalez/nost_sos_visualization:latest
     container_name: "nost-sos"
     ports:
       - "3000:3000"
     volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - ".env:/usr/src/app/.env"
+    restart: always
 ```
 
 > **Note:** Make sure you have created the ```.env``` file in your working directory.
