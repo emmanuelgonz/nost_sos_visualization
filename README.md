@@ -144,7 +144,7 @@ A directory tree structure is provided below:
 
 ```
 ├── README.md
-├── env.js 
+├── .env 
 ├── js
 │   └── amqp-websocket-client.mjs
 ├── media
