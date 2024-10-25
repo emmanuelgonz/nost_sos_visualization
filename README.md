@@ -68,23 +68,27 @@ Sign up for a free Cesium ion account [here](https://ion.cesium.com/signup). The
 
 ### User Credentials
 
-- Create env.js file
+- Create .env file
 
 ```bash
-touch env.js
+touch .env
 ```
 
-To the file, add the contents: 
+Add the following to the file: 
 
 ```
-var HOST="nost.smce.nasa.gov"
-var RABBITMQ_PORT=15670
-var KEYCLOAK_PORT=8443
-var CLIENT_ID=<request from NOS-T administrators>
-var CLIENT_SECRET=<request from NOS-T administrators>
-var USERNAME=<request from NOS-T administrators>
-var PASSWORD=<request from NOS-T administrators>
-var TOKEN=<Cesium access token>
+HOST="nost.smce.nasa.gov"
+KEYCLOAK_PORT=8443
+KEYCLOAK_REALM="NOS-T"
+RABBITMQ_PORT=5671
+RABBITMQ_RELAY_PORT=15670
+USERNAME=<request from NOS-T administrators>
+PASSWORD=<request from NOS-T administrators>
+CLIENT_ID=<request from NOS-T administrators>
+CLIENT_SECRET_KEY=<request from NOS-T administrators>
+VIRTUAL_HOST="/"
+IS_TLS=True
+TOKEN=<Cesium access token>
 ```
 
 ## Run Application
@@ -99,11 +103,31 @@ node server.js
 
 ### Docker
 
+#### Local Build
+
 Start docker container: 
 
 ```bash
 docker-compose up --build
 ```
+
+#### Docker Compose
+
+Include the following in your docker-compose.yml
+
+```bash
+services:
+  nost-sos:
+    image: emmanuelgonzalez/nost_sos_visualization:latest
+    container_name: "nost-sos"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ".env:/usr/src/app/.env"
+    restart: always
+```
+
+> **Note:** Make sure you have created the ```.env``` file in your working directory.
 
 ## Project Structure
 
