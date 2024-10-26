@@ -349,8 +349,11 @@
                         });
                     }
                 }
+                const tls = window.location.protocol === "https:"
+                console.log(tls);
+                const url = `${tls ? "wss" : "ws"}://${BROKER_HOST}:${RABBITMQ_RELAY_PORT}`
 
-                const url = `ws://${BROKER_HOST}:${RABBITMQ_RELAY_PORT}`;
+                // const url = `ws://${BROKER_HOST}:${RABBITMQ_RELAY_PORT}`;
                 console.log(`Connecting to ${url}`);
 
                 let accessToken;
