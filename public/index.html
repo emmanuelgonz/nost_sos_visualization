@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Satellite Position Visualization</title>
+    <!-- Include Cesium JS and CSS -->
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.88/Build/Cesium/Cesium.js"></script>
     <link href="https://cesium.com/downloads/cesiumjs/releases/1.88/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
+    <!-- Include Keycloak JS -->
+    <script src="https://cdn.jsdelivr.net/npm/keycloak-js@20.0.2/dist/keycloak.min.js"></script>
+
     <style>
         #cesiumContainer {
-            width: 100%; 
-            height: 100vh; 
-            margin: 0; 
+            width: 100%;
+            height: 100vh;
+            margin: 0;
             padding: 0;
         }
         #controls {
@@ -28,14 +33,14 @@
     <div id="controls">
         <h3>Layer Selection</h3>
         <hr>
-        
+
         <h4>Focal Area Extents</h4>
         <label>
             <input type="checkbox" id="toggleMissouriLayer" checked>
             Missouri River Basin Layer
         </label>
         <br>
-        
+
         <h4>Optimization Layers</h4>
         <label>
             <input type="checkbox" id="toggleSnowLayer">
@@ -57,28 +62,51 @@
         <label>
             <input type="checkbox" id="toggleGcomLayer">
             GCOM-W
-        <label>
+        </label>
         <br>
         <label>
             <input type="checkbox" id="toggleCapellaLayer">
             Capella 14
-        <label>
+        </label>
     </div>
     <script type="module">
         import { AMQPWebSocketClient } from './js/amqp-websocket-client.mjs';
-        fetch('/env')
+
+        // Keycloak configuration
+        const keycloak = new Keycloak({
+            url: `https://nost.smce.nasa.gov:8443/`, // Replace with your Keycloak server URL
+            realm: 'NOS-T',               // Replace with your Keycloak realm
+            clientId: 'sos_nodejs'         // Replace with your Keycloak client ID
+        });
+
+        keycloak.init({ onLoad: 'login-required' }).then(function(authenticated) {
+            if (authenticated) {
+                startApplication();
+            } else {
+                console.error('User not authenticated');
+            }
+        }).catch(function() {
+            console.error('Failed to initialize Keycloak');
+        });
+
+        function startApplication() {
+            // Fetch environment variables with the token
+            fetch('/env', {
+                headers: {
+                    'Authorization': 'Bearer ' + keycloak.token
+                }
+            })
             .then(response => response.json())
             .then(env => {
-                var CESIUM_ACCESS_TOKEN = env.TOKEN;
-                var BROKER_HOST = env.HOST;
-                var RABBITMQ_RELAY_PORT = env.RABBITMQ_RELAY_PORT;
-                var AUTH_PORT = env.KEYCLOAK_PORT;
-                var BROKER_CLIENT_USERNAME = env.USERNAME;
-                var BROKER_CLIENT_PASSWORD = env.PASSWORD;
-                var BROKER_CLIENT_ID = env.CLIENT_ID;
-                var BROKER_CLIENT_SECRET = env.CLIENT_SECRET;
+                const CESIUM_ACCESS_TOKEN = env.TOKEN;
+                const BROKER_HOST = env.HOST;
+                const RABBITMQ_RELAY_PORT = env.RABBITMQ_RELAY_PORT;
+                const AUTH_PORT = env.KEYCLOAK_PORT;
+                const BROKER_CLIENT_USERNAME = env.USERNAME;
+                const BROKER_CLIENT_PASSWORD = env.PASSWORD;
+                const BROKER_CLIENT_ID = env.CLIENT_ID;
+                const BROKER_CLIENT_SECRET = env.CLIENT_SECRET_KEY;
 
-                console.log(CESIUM_ACCESS_TOKEN);
                 Cesium.Ion.defaultAccessToken = CESIUM_ACCESS_TOKEN;
 
                 const viewer = new Cesium.Viewer('cesiumContainer');
@@ -101,7 +129,7 @@
                 }).otherwise(function (error) {
                     console.error(error);
                 });
-                
+
                 // Load the Missouri River Basin GeoJSON file
                 Cesium.GeoJsonDataSource.load('/spatial/WBD_10_HU2_4326.geojson', {
                     clampToGround: false,
@@ -114,25 +142,29 @@
                     console.error(error);
                 });
 
+                // Function to handle incoming messages
                 function handleMessage(topic, payload) {
-                    if (topic == "sos.manager.init") {
+                    // Your existing message handling code goes here
+                    // For brevity, placeholder code is used
+
+                    if (topic === "sos.manager.init") {
                         console.log("Initialize command received.");
                         viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(payload.taskingParameters.simStartTime);
                         viewer.clockViewModel.startTime = Cesium.JulianDate.fromIso8601(payload.taskingParameters.simStartTime);
                         viewer.clockViewModel.stopTime = Cesium.JulianDate.fromIso8601(payload.taskingParameters.simStopTime);
                         viewer.clockViewModel.clockRange = Cesium.ClockRange.CLAMPED;
                         viewer.timeline.zoomTo(viewer.clockViewModel.startTime, viewer.clockViewModel.stopTime);
-                    } else if (topic == "sos.manager.start") {
+                    } else if (topic === "sos.manager.start") {
                         console.log("Start command received.");
                         viewer.clockViewModel.multiplier = payload.taskingParameters.timeScalingFactor;
                     } else if (topic == "sos.manager.time" || topic == "sos.manager.status.time") {
                         console.log("Time message received.");
                         viewer.clockViewModel.currentTime = Cesium.JulianDate.fromIso8601(payload.properties.simTime);
                         viewer.timeline.updateFromClock();
-                    } else if (topic == "sos.manager.update") {
+                    } else if (topic === "sos.manager.update") {
                         console.log("Update message received.");
                         viewer.clockViewModel.multiplier = payload.taskingParameters.timeScalingFactor;
-                    } else if(topic=="sos.manager.stop"){
+                    } else if (topic === "sos.manager.stop") {
                         console.log("Stop command received.");
                         viewer.clockViewModel.multiplier = 0;
                     } else if (topic === "sos.constellation.location") {
@@ -349,17 +381,18 @@
                         });
                     }
                 }
-                const tls = window.location.protocol === "https:"
-                console.log(tls);
-                const url = `${tls ? "wss" : "ws"}://${BROKER_HOST}:${RABBITMQ_RELAY_PORT}`
 
-                // const url = `ws://${BROKER_HOST}:${RABBITMQ_RELAY_PORT}`;
+                // Handle the WebSocket connection and events
+                const tls = window.location.protocol === "https:";
+                const url = `${tls ? "wss" : "ws"}://${BROKER_HOST}:${RABBITMQ_RELAY_PORT}`;
                 console.log(`Connecting to ${url}`);
 
                 let accessToken;
 
                 function fetchAccessToken() {
                     return fetch(`https://${BROKER_HOST}:${AUTH_PORT}/realms/NOS-T/protocol/openid-connect/token`, {
+                    // return fetch(`https://${BROKER_HOST}:${AUTH_PORT}/realms/your-realm/protocol/openid-connect/token`, {
+                    // return fetch(`http://localhost:8080/realms/myrealm/protocol/openid-connect/token`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
@@ -405,24 +438,28 @@
                                 const conn = await amqp.connect();
                                 const ch = await conn.channel();
                                 console.log("Connected to the broker.");
-                                await ch.exchangeDeclare("sos", "topic", {durable: false, autoDelete: true});
-                                const q = await ch.queue("sos.#", {durable: false, autoDelete: true});
+                                await ch.exchangeDeclare("sos", "topic", { durable: false, autoDelete: true });
+                                const q = await ch.queue("", { exclusive: true });
                                 await q.bind("sos", "sos.#");
-                                const consumer = await q.subscribe({noAck: false}, (msg) => {
+                                await q.subscribe({ noAck: true }, (msg) => {
                                     const topic = msg.routingKey;
                                     const payload = JSON.parse(msg.bodyToString());
                                     handleMessage(topic, payload);
-                                    msg.ack();
                                 });
+
                                 startTokenRefresh(conn);
                             } catch (err) {
-                                console.error("Error", err, "reconnecting in 1s");
+                                console.error("Error during AMQP setup:", err);
                             }
                         }
                         start(amqp);
                     }
                 });
+            })
+            .catch(error => {
+                console.error('Error fetching /env:', error);
             });
+        }
     </script>
 </body>
 </html>
