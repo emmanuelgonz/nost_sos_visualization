@@ -1,6 +1,6 @@
 {
-  "realm": "myrealm",
-  "auth-server-url": "http://localhost:8080/",
+  "realm": "NOS-T",
+  "auth-server-url": "https://nost.smce.nasa.gov:8443/",
   "ssl-required": "external",
   "resource": "sos_nodejs",
   "public-client": true,
