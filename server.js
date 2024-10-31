@@ -37,6 +37,7 @@ app.get('/', keycloak.protect(), (req, res) => {
 app.get('/env', keycloak.protect(), (req, res) => {
   res.json({
     HOST: process.env.HOST,
+    KEYCLOAK_REALM: process.env.KEYCLOAK_REALM,
     RABBITMQ_RELAY_PORT: process.env.RABBITMQ_RELAY_PORT,
     KEYCLOAK_PORT: process.env.KEYCLOAK_PORT,
     CLIENT_ID: process.env.CLIENT_ID,
