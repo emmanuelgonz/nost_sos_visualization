@@ -41,7 +41,7 @@ app.get('/env', keycloak.protect(), (req, res) => {
     RABBITMQ_RELAY_PORT: process.env.RABBITMQ_RELAY_PORT,
     KEYCLOAK_PORT: process.env.KEYCLOAK_PORT,
     CLIENT_ID: process.env.CLIENT_ID,
-    CLIENT_SECRET: process.env.CLIENT_SECRET_KEY,
+    CLIENT_SECRET_KEY: process.env.CLIENT_SECRET_KEY,
     USERNAME: process.env.USERNAME,
     PASSWORD: process.env.PASSWORD,
     TOKEN: process.env.TOKEN

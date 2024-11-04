@@ -72,7 +72,7 @@
     <script type="module">
         import { AMQPWebSocketClient } from './js/amqp-websocket-client.mjs';
 
-        // Keycloak configuration
+        // Keycloak configuration for user authentication
         const keycloak = new Keycloak({
             url: `https://nost.smce.nasa.gov:8443/`, // Replace with your Keycloak server URL
             realm: `NOS-T`,               // Replace with your Keycloak realm
@@ -102,8 +102,6 @@
                 const BROKER_HOST = env.HOST;
                 const RABBITMQ_RELAY_PORT = env.RABBITMQ_RELAY_PORT;
                 const AUTH_PORT = env.KEYCLOAK_PORT;
-                const BROKER_CLIENT_USERNAME = env.USERNAME;
-                const BROKER_CLIENT_PASSWORD = env.PASSWORD;
                 const BROKER_CLIENT_ID = env.CLIENT_ID;
                 const BROKER_CLIENT_SECRET = env.CLIENT_SECRET_KEY;
                 const KEYCLOAK_REALM = env.KEYCLOAK_REALM;
@@ -388,39 +386,36 @@
                 const url = `${tls ? "wss" : "ws"}://${BROKER_HOST}:${RABBITMQ_RELAY_PORT}`;
                 console.log(`Connecting to ${url}`);
 
-                // let accessToken;
-                const accessToken = keycloak.token;
-                console.log(accessToken);
+                let accessToken;
 
                 function fetchAccessToken() {
                     return fetch(`https://${BROKER_HOST}:${AUTH_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, {
                         method: 'POST',
                         headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
+                            'Content-Type': 'application/x-www-form-urlencoded'
                         },
                         body: new URLSearchParams({
-                        'client_id': BROKER_CLIENT_ID,
-                        'client_secret': BROKER_CLIENT_SECRET,
-                        'grant_type': 'client_credentials'
+                            'client_id': BROKER_CLIENT_ID,
+                            'client_secret': BROKER_CLIENT_SECRET,
+                            'grant_type': 'client_credentials'
                         })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                        return response.text().then(text => {
-                            throw new Error(`Error ${response.status}: ${response.statusText} - ${text}`);
-                        });
+                    }).then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return response.text().then(text => {
+                                console.error("Failed to obtain access token:", text);
+                                throw new Error('Failed to obtain access token');
+                            });
                         }
-                        return response.json();
-                    })
-                    .then(data => {
+                    }).then(data => {
                         console.log("Access token obtained.");
                         accessToken = data.access_token;
                         return accessToken;
-                    })
-                    .catch(error => {
-                        console.error('Fetch access token error:', error);
+                    }).catch(error => {
+                        console.error(error);
                     });
-                    }
+                }
 
                 function startTokenRefresh(conn) {
                     setInterval(() => {
