@@ -91,7 +91,7 @@
 
         function startApplication() {
             // Fetch environment variables with the token
-            fetch('/env', {
+            fetch('/sos/env', {
                 headers: {
                     'Authorization': 'Bearer ' + keycloak.token
                 }
@@ -118,7 +118,7 @@
                 let gcomLayer, capellaLayer;
 
                 // Load the optimization GeoJSON file
-                Cesium.GeoJsonDataSource.load('/spatial/Optimization_result.geojson', {
+                Cesium.GeoJsonDataSource.load('/sos/spatial/Optimization_result.geojson', {
                     clampToGround: false,
                     fill: Cesium.Color.YELLOW.withAlpha(0.8),
                 }).then(function (dataSource) {
@@ -130,7 +130,7 @@
                 });
 
                 // Load the Missouri River Basin GeoJSON file
-                Cesium.GeoJsonDataSource.load('/spatial/WBD_10_HU2_4326.geojson', {
+                Cesium.GeoJsonDataSource.load('/sos/spatial/WBD_10_HU2_4326.geojson', {
                     clampToGround: false,
                     stroke: Cesium.Color.RED,
                     fill: Cesium.Color.RED.withAlpha(0.0),
