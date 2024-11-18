@@ -293,92 +293,36 @@
                                 }
                             });
                         }
-
-                        // Event listeners for toggling layers
-                        document.getElementById('toggleSnowLayer').addEventListener('change', function() {
-                            if (this.checked && !snowLayer) {
-                                const snowLayerImage = `data:image/png;base64,${payload.snow_layer}`;
-                                snowLayer = new Cesium.ImageryLayer(
-                                    new Cesium.SingleTileImageryProvider({
-                                        url: snowLayerImage,
-                                        rectangle: Cesium.Rectangle.fromDegrees(
-                                            payload.top_left[0], payload.bottom_right[1], 
-                                            payload.bottom_right[0], payload.top_left[1]
-                                        )
-                                    })
-                                );
-                                viewer.scene.imageryLayers.add(snowLayer);
-                            } else if (snowLayer) {
-                                snowLayer.show = this.checked;
-                            }
-                        });
-
-                        document.getElementById('toggleResolutionLayer').addEventListener('change', function() {
-                            if (this.checked && !resolutionLayer) {
-                                const resolutionLayerImage = `data:image/png;base64,${payload.resolution_layer}`;
-                                resolutionLayer = new Cesium.ImageryLayer(
-                                    new Cesium.SingleTileImageryProvider({
-                                        url: resolutionLayerImage,
-                                        rectangle: Cesium.Rectangle.fromDegrees(
-                                            payload.top_left[0], payload.bottom_right[1], 
-                                            payload.bottom_right[0], payload.top_left[1]
-                                        )
-                                    })
-                                );
-                                viewer.scene.imageryLayers.add(resolutionLayer);
-                            } else if (resolutionLayer) {
-                                resolutionLayer.show = this.checked;
-                            }
-                        });
-
-                        document.getElementById('toggleOptimizationLayer').addEventListener('change', function() {
-                            if (optimizationLayer) {
-                                optimizationLayer.show = this.checked;
-                            }
-                        });
-
-                        document.getElementById('toggleMissouriLayer').addEventListener('change', function() {
-                            if (missouriLayer) {
-                                missouriLayer.show = this.checked;
-                            }
-                        });
-
-                        document.getElementById('toggleGcomLayer').addEventListener('change', function() {
-                            if (this.checked && !gcomLayer) {
-                                const gcomLayerImage = `data:image/png;base64,${payload.gcom_layer}`;
-                                gcomLayer = new Cesium.ImageryLayer(
-                                    new Cesium.SingleTileImageryProvider({
-                                        url: gcomLayerImage,
-                                        rectangle: Cesium.Rectangle.fromDegrees(
-                                            payload.top_left[0], payload.bottom_right[1], 
-                                            payload.bottom_right[0], payload.top_left[1]
-                                        )
-                                    })
-                                );
-                                viewer.scene.imageryLayers.add(gcomLayer);
-                            } else if (gcomLayer) {
-                                gcomLayer.show = this.checked;
-                            }
-                        });
-
-                        document.getElementById('toggleCapellaLayer').addEventListener('change', function() {
-                            if (this.checked && !capellaLayer) {
-                                const capellaLayerImage = `data:image/png;base64,${payload.capella_layer}`;
-                                capellaLayer = new Cesium.ImageryLayer(
-                                    new Cesium.SingleTileImageryProvider({
-                                        url: capellaLayerImage,
-                                        rectangle: Cesium.Rectangle.fromDegrees(
-                                            payload.top_left[0], payload.bottom_right[1], 
-                                            payload.bottom_right[0], payload.top_left[1]
-                                        )
-                                    })
-                                );
-                                viewer.scene.imageryLayers.add(capellaLayer);
-                            } else if (capellaLayer) {
-                                capellaLayer.show = this.checked;
-                            }
-                        });
+                    } else if (topic === "sos.constellation.snow_layer") {
+                        handleLayerMessage(payload, 'snow_layer', 'toggleSnowLayer');
+                    } else if (topic === "sos.constellation.resolution_layer") {
+                        handleLayerMessage(payload, 'resolution_layer', 'toggleResolutionLayer');
+                    } else if (topic === "sos.constellation.optimization_layer") {
+                        handleLayerMessage(payload, 'optimization_layer', 'toggleOptimizationLayer');
+                    } else if (topic === "sos.constellation.missouri_layer") {
+                        handleLayerMessage(payload, 'missouri_layer', 'toggleMissouriLayer');
+                    } else if (topic === "sos.constellation.gcom_layer") {
+                        handleLayerMessage(payload, 'gcom_layer', 'toggleGcomLayer');
+                    } else if (topic === "sos.constellation.capella_layer") {
+                        handleLayerMessage(payload, 'capella_layer', 'toggleCapellaLayer');
                     }
+                }
+
+                function handleLayerMessage(payload, layerName, toggleId) {
+                    const layerImage = `data:image/png;base64,${payload[layerName]}`;
+                    const layer = new Cesium.ImageryLayer(
+                        new Cesium.SingleTileImageryProvider({
+                            url: layerImage,
+                            rectangle: Cesium.Rectangle.fromDegrees(
+                                payload.top_left[0], payload.bottom_right[1], 
+                                payload.bottom_right[0], payload.top_left[1]
+                            )
+                        })
+                    );
+                    viewer.scene.imageryLayers.add(layer);
+                    document.getElementById(toggleId).addEventListener('change', function() {
+                        layer.show = this.checked;
+                    });
                 }
 
                 // Handle the WebSocket connection and events
