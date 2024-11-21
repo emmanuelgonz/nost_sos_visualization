@@ -43,7 +43,7 @@
 
         <h4>Optimization Layers</h4>
         <label>
-            <input type="checkbox" id="toggleSnowLayer">
+            <input type="checkbox" id="toggleSnowLayer" checked>
             Snow
         </label>
         <br>
@@ -307,23 +307,85 @@
                         handleLayerMessage(payload, 'capella_layer', 'toggleCapellaLayer');
                     }
                 }
-
                 function handleLayerMessage(payload, layerName, toggleId) {
-                    const layerImage = `data:image/png;base64,${payload[layerName]}`;
-                    const layer = new Cesium.ImageryLayer(
-                        new Cesium.SingleTileImageryProvider({
-                            url: layerImage,
-                            rectangle: Cesium.Rectangle.fromDegrees(
-                                payload.top_left[0], payload.bottom_right[1], 
-                                payload.bottom_right[0], payload.top_left[1]
-                            )
-                        })
-                    );
-                    viewer.scene.imageryLayers.add(layer);
-                    document.getElementById(toggleId).addEventListener('change', function() {
-                        layer.show = this.checked;
+                    let layer;
+                    const checkbox = document.getElementById(toggleId);
+                    
+                    if (checkbox.checked) {
+                        const layerImage = `data:image/png;base64,${payload[layerName]}`;
+                        layer = new Cesium.ImageryLayer(
+                            new Cesium.SingleTileImageryProvider({
+                                url: layerImage,
+                                rectangle: Cesium.Rectangle.fromDegrees(
+                                    payload.top_left[0], payload.bottom_right[1], 
+                                    payload.bottom_right[0], payload.top_left[1]
+                                )
+                            })
+                        );
+                        viewer.scene.imageryLayers.add(layer);
+                    }
+
+                    checkbox.addEventListener('change', function() {
+                        if (layer) {
+                            layer.show = this.checked;
+                        } else if (this.checked) {
+                            const layerImage = `data:image/png;base64,${payload[layerName]}`;
+                            layer = new Cesium.ImageryLayer(
+                                new Cesium.SingleTileImageryProvider({
+                                    url: layerImage,
+                                    rectangle: Cesium.Rectangle.fromDegrees(
+                                        payload.top_left[0], payload.bottom_right[1], 
+                                        payload.bottom_right[0], payload.top_left[1]
+                                    )
+                                })
+                            );
+                            viewer.scene.imageryLayers.add(layer);
+                        }
                     });
                 }
+                // function handleLayerMessage(payload, layerName, toggleId) {
+                //     let layer;
+                //     console.log("Handle layer message");
+                //     document.getElementById(toggleId).addEventListener('change', function() {
+                //         if (this.checked && !layer) {
+                //             const layerImage = `data:image/png;base64,${payload[layerName]}`;
+                //             layer = new Cesium.ImageryLayer(
+                //                 new Cesium.SingleTileImageryProvider({
+                //                     url: layerImage,
+                //                     rectangle: Cesium.Rectangle.fromDegrees(
+                //                         payload.top_left[0], payload.bottom_right[1], 
+                //                         payload.bottom_right[0], payload.top_left[1]
+                //                     )
+                //                 })
+                //             );
+                //             viewer.scene.imageryLayers.add(layer);
+                //         } else if (layer) {
+                //             layer.show = this.checked;
+                //         }
+                //     });
+                // }
+
+                // function handleLayerMessage(payload, layerName, toggleId) {
+                //     let layer;
+                //     document.getElementById(toggleId).addEventListener('change', function() {
+                //         if (this.checked) {
+                //             console.log("Layer checked and visualizing");
+                //             const layerImage = `data:image/png;base64,${payload[layerName]}`;
+                //             layer = new Cesium.ImageryLayer(
+                //                 new Cesium.SingleTileImageryProvider({
+                //                     url: layerImage,
+                //                     rectangle: Cesium.Rectangle.fromDegrees(
+                //                         payload.top_left[0], payload.bottom_right[1], 
+                //                         payload.bottom_right[0], payload.top_left[1]
+                //                     )
+                //                 })
+                //             );
+                //             viewer.scene.imageryLayers.add(layer);
+                //         } else if (layer) {
+                //             layer.show = this.checked;
+                //         }
+                //     });
+                // }
 
                 // Handle the WebSocket connection and events
                 const tls = window.location.protocol === "https:";
