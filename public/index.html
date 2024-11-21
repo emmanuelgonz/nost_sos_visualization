@@ -141,6 +141,19 @@
                     console.error(error);
                 });
 
+                // Event listeners for toggling vector layers
+                document.getElementById('toggleOptimizationLayer').addEventListener('change', function() {
+                    if (optimizationLayer) {
+                        optimizationLayer.show = this.checked;
+                    }
+                });
+
+                document.getElementById('toggleMissouriLayer').addEventListener('change', function() {
+                    if (missouriLayer) {
+                        missouriLayer.show = this.checked;
+                    }
+                });
+
                 // Function to handle incoming messages
                 function handleMessage(topic, payload) {
                     // Your existing message handling code goes here
@@ -297,20 +310,54 @@
                         handleLayerMessage(payload, 'snow_layer', 'toggleSnowLayer');
                     } else if (topic === "sos.constellation.resolution_layer") {
                         handleLayerMessage(payload, 'resolution_layer', 'toggleResolutionLayer');
-                    } else if (topic === "sos.constellation.optimization_layer") {
-                        handleLayerMessage(payload, 'optimization_layer', 'toggleOptimizationLayer');
-                    } else if (topic === "sos.constellation.missouri_layer") {
-                        handleLayerMessage(payload, 'missouri_layer', 'toggleMissouriLayer');
                     } else if (topic === "sos.constellation.gcom_layer") {
                         handleLayerMessage(payload, 'gcom_layer', 'toggleGcomLayer');
                     } else if (topic === "sos.constellation.capella_layer") {
                         handleLayerMessage(payload, 'capella_layer', 'toggleCapellaLayer');
                     }
                 }
+
+                // function handleLayerMessage(payload, layerName, toggleId) {
+                //     let layer;
+                //     const checkbox = document.getElementById(toggleId);
+                    
+                //     if (checkbox.checked) {
+                //         const layerImage = `data:image/png;base64,${payload[layerName]}`;
+                //         layer = new Cesium.ImageryLayer(
+                //             new Cesium.SingleTileImageryProvider({
+                //                 url: layerImage,
+                //                 rectangle: Cesium.Rectangle.fromDegrees(
+                //                     payload.top_left[0], payload.bottom_right[1], 
+                //                     payload.bottom_right[0], payload.top_left[1]
+                //                 )
+                //             })
+                //         );
+                //         viewer.scene.imageryLayers.add(layer);
+                //     }
+
+                //     checkbox.addEventListener('change', function() {
+                //         if (layer) {
+                //             layer.show = this.checked;
+                //         } else if (this.checked) {
+                //             const layerImage = `data:image/png;base64,${payload[layerName]}`;
+                //             layer = new Cesium.ImageryLayer(
+                //                 new Cesium.SingleTileImageryProvider({
+                //                     url: layerImage,
+                //                     rectangle: Cesium.Rectangle.fromDegrees(
+                //                         payload.top_left[0], payload.bottom_right[1], 
+                //                         payload.bottom_right[0], payload.top_left[1]
+                //                     )
+                //                 })
+                //             );
+                //             viewer.scene.imageryLayers.add(layer);
+                //         }
+                //     });
+                // }
                 function handleLayerMessage(payload, layerName, toggleId) {
+                    console.log('Handling layer message:', layerName);
                     let layer;
                     const checkbox = document.getElementById(toggleId);
-                    
+
                     if (checkbox.checked) {
                         const layerImage = `data:image/png;base64,${payload[layerName]}`;
                         layer = new Cesium.ImageryLayer(
@@ -342,51 +389,25 @@
                             viewer.scene.imageryLayers.add(layer);
                         }
                     });
+
+                    return function updateLayer(newPayload) {
+                        const newLayerImage = `data:image/png;base64,${newPayload[layerName]}`;
+                        const newLayer = new Cesium.ImageryLayer(
+                            new Cesium.SingleTileImageryProvider({
+                                url: newLayerImage,
+                                rectangle: Cesium.Rectangle.fromDegrees(
+                                    newPayload.top_left[0], newPayload.bottom_right[1], 
+                                    newPayload.bottom_right[0], newPayload.top_left[1]
+                                )
+                            })
+                        );
+                        viewer.scene.imageryLayers.remove(layer);
+                        layer = newLayer;
+                        viewer.scene.imageryLayers.add(layer);
+                        console.log('Layer updated.');
+                        layer.show = checkbox.checked;
+                    };
                 }
-                // function handleLayerMessage(payload, layerName, toggleId) {
-                //     let layer;
-                //     console.log("Handle layer message");
-                //     document.getElementById(toggleId).addEventListener('change', function() {
-                //         if (this.checked && !layer) {
-                //             const layerImage = `data:image/png;base64,${payload[layerName]}`;
-                //             layer = new Cesium.ImageryLayer(
-                //                 new Cesium.SingleTileImageryProvider({
-                //                     url: layerImage,
-                //                     rectangle: Cesium.Rectangle.fromDegrees(
-                //                         payload.top_left[0], payload.bottom_right[1], 
-                //                         payload.bottom_right[0], payload.top_left[1]
-                //                     )
-                //                 })
-                //             );
-                //             viewer.scene.imageryLayers.add(layer);
-                //         } else if (layer) {
-                //             layer.show = this.checked;
-                //         }
-                //     });
-                // }
-
-                // function handleLayerMessage(payload, layerName, toggleId) {
-                //     let layer;
-                //     document.getElementById(toggleId).addEventListener('change', function() {
-                //         if (this.checked) {
-                //             console.log("Layer checked and visualizing");
-                //             const layerImage = `data:image/png;base64,${payload[layerName]}`;
-                //             layer = new Cesium.ImageryLayer(
-                //                 new Cesium.SingleTileImageryProvider({
-                //                     url: layerImage,
-                //                     rectangle: Cesium.Rectangle.fromDegrees(
-                //                         payload.top_left[0], payload.bottom_right[1], 
-                //                         payload.bottom_right[0], payload.top_left[1]
-                //                     )
-                //                 })
-                //             );
-                //             viewer.scene.imageryLayers.add(layer);
-                //         } else if (layer) {
-                //             layer.show = this.checked;
-                //         }
-                //     });
-                // }
-
                 // Handle the WebSocket connection and events
                 const tls = window.location.protocol === "https:";
                 const url = `${tls ? "wss" : "ws"}://${BROKER_HOST}:${RABBITMQ_RELAY_PORT}`;
