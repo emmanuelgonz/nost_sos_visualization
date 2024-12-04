@@ -306,13 +306,13 @@
                                 }
                             });
                         }
-                    } else if (topic === "sos.constellation.snow_layer") {
+                    } else if (topic === "sos.snow.layer") {
                         handleLayerMessage(payload, 'snow_layer', 'toggleSnowLayer');
-                    } else if (topic === "sos.constellation.resolution_layer") {
+                    } else if (topic === "sos.resolution.layer") {
                         handleLayerMessage(payload, 'resolution_layer', 'toggleResolutionLayer');
-                    } else if (topic === "sos.constellation.gcom_layer") {
+                    } else if (topic === "sos.gcom.layer") {
                         handleLayerMessage(payload, 'gcom_layer', 'toggleGcomLayer');
-                    } else if (topic === "sos.constellation.capella_layer") {
+                    } else if (topic === "sos.capella.layer") {
                         handleLayerMessage(payload, 'capella_layer', 'toggleCapellaLayer');
                     }
                 }
