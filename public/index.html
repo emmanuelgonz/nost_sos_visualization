@@ -43,7 +43,7 @@
 
         <h4>Optimization Layers</h4>
         <label>
-            <input type="checkbox" id="toggleSnowLayer" checked>
+            <input type="checkbox" id="toggleSnowLayer" >
             Snow
         </label>
         <br>
@@ -52,12 +52,29 @@
             Resolution
         </label>
         <br>
+
+        <br>
         <label>
-            <input type="checkbox" id="toggleOptimizationLayer" checked>
-            Optimization - Selected Locations
+            <input type="checkbox" id="toggleSweChangeLayer" checked>
+            Snow Water Equivalent Change
         </label>
         <br>
 
+        <!-- <label>
+            <input type="checkbox" id="toggleOptimizationLayer" checked>
+            Optimization - Selected Locations
+        </label>
+        <br> -->
+        <label>
+            <input type="checkbox" id="toggleOptimizationLayerAll" checked>
+            Optimization - All Locations
+        </label>
+        <br>
+        <label>
+            <input type="checkbox" id="toggleOptimizationLayerSelected" checked>
+            Optimization - Selected Locations
+        </label>
+        <br>
         <h4>Reward Layers</h4>
         <label>
             <input type="checkbox" id="toggleGcomLayer">
@@ -114,20 +131,20 @@
                 let firstUpdate = true;
                 let previousLabelEntities = {};
                 let snowLayer, resolutionLayer;
-                let optimizationLayer, missouriLayer;
+                let optimizationLayer, optimizationLayerAll, optimizationLayerSelected, missouriLayer;
                 let gcomLayer, capellaLayer;
 
-                // Load the optimization GeoJSON file
-                Cesium.GeoJsonDataSource.load('/sos/spatial/Optimization_result.geojson', {
-                    clampToGround: false,
-                    fill: Cesium.Color.YELLOW.withAlpha(0.8),
-                }).then(function (dataSource) {
-                    optimizationLayer = dataSource;
-                    viewer.dataSources.add(dataSource);
-                    viewer.zoomTo(dataSource);
-                }).otherwise(function (error) {
-                    console.error(error);
-                });
+                // // Load the optimization GeoJSON file
+                // Cesium.GeoJsonDataSource.load('/sos/spatial/Optimization_result.geojson', {
+                //     clampToGround: false,
+                //     fill: Cesium.Color.YELLOW.withAlpha(0.8),
+                // }).then(function (dataSource) {
+                //     optimizationLayer = dataSource;
+                //     viewer.dataSources.add(dataSource);
+                //     viewer.zoomTo(dataSource);
+                // }).otherwise(function (error) {
+                //     console.error(error);
+                // });
 
                 // Load the Missouri River Basin GeoJSON file
                 Cesium.GeoJsonDataSource.load('/sos/spatial/WBD_10_HU2_4326.geojson', {
@@ -137,14 +154,28 @@
                 }).then(function (dataSource) {
                     missouriLayer = dataSource;
                     viewer.dataSources.add(dataSource);
+                    viewer.zoomTo(dataSource);
                 }).otherwise(function (error) {
                     console.error(error);
                 });
 
+                // // Event listeners for toggling vector layers
+                // document.getElementById('toggleOptimizationLayer').addEventListener('change', function() {
+                //     if (optimizationLayer) {
+                //         optimizationLayer.show = this.checked;
+                //     }
+                // });
                 // Event listeners for toggling vector layers
-                document.getElementById('toggleOptimizationLayer').addEventListener('change', function() {
-                    if (optimizationLayer) {
-                        optimizationLayer.show = this.checked;
+                document.getElementById('toggleOptimizationLayerAll').addEventListener('change', function() {
+                    if (optimizationLayerAll) {
+                        optimizationLayerAll.show = this.checked;
+                    }
+                });
+
+                // Event listeners for toggling vector layers
+                document.getElementById('toggleOptimizationLayerSelected').addEventListener('change', function() {
+                    if (optimizationLayerSelected) {
+                        optimizationLayerSelected.show = this.checked;
                     }
                 });
 
@@ -314,13 +345,20 @@
                         handleLayerMessage(payload, 'gcom_layer', 'toggleGcomLayer');
                     } else if (topic === "sos.capella.layer") {
                         handleLayerMessage(payload, 'capella_layer', 'toggleCapellaLayer');
+                    } else if (topic === "sos.swe_change.layer") {
+                        handleLayerMessage(payload, 'swe_change_layer', 'toggleSweChangeLayer');
+                    } else if (topic === "sos.swe_change.all") {
+                        handleIncomingMessage(payload, "all");
+                    } else if (topic === "sos.swe_change.selected") {
+                        handleIncomingMessage(payload, "selected");
                     }
                 }
 
                 // function handleLayerMessage(payload, layerName, toggleId) {
+                //     console.log('Handling layer message:', layerName);
                 //     let layer;
                 //     const checkbox = document.getElementById(toggleId);
-                    
+
                 //     if (checkbox.checked) {
                 //         const layerImage = `data:image/png;base64,${payload[layerName]}`;
                 //         layer = new Cesium.ImageryLayer(
@@ -352,8 +390,70 @@
                 //             viewer.scene.imageryLayers.add(layer);
                 //         }
                 //     });
+
+                //     return function updateLayer(newPayload) {
+                //         const newLayerImage = `data:image/png;base64,${newPayload[layerName]}`;
+                //         const newLayer = new Cesium.ImageryLayer(
+                //             new Cesium.SingleTileImageryProvider({
+                //                 url: newLayerImage,
+                //                 rectangle: Cesium.Rectangle.fromDegrees(
+                //                     newPayload.top_left[0], newPayload.bottom_right[1], 
+                //                     newPayload.bottom_right[0], newPayload.top_left[1]
+                //                 )
+                //             })
+                //         );
+                //         viewer.scene.imageryLayers.remove(layer);
+                //         layer = newLayer;
+                //         viewer.scene.imageryLayers.add(layer);
+                //         console.log('Layer updated.');
+                //         layer.show = checkbox.checked;
+                //     };
                 // }
+
+                // Function to handle the incoming message
+                function handleIncomingMessage(payload, layerType) {
+                    // Parse the message to get the GeoJSON data
+                    const geoJsonData = JSON.parse(payload.vector_layer);
+
+                    // Determine the color based on the layerType
+                    const color = layerType === 'all' ? Cesium.Color.GRAY : Cesium.Color.YELLOW;
+
+                    // Load the GeoJSON data from the string
+                    Cesium.GeoJsonDataSource.load(geoJsonData, {
+                    clampToGround: false,
+                    stroke: color,
+                    fill: color.withAlpha(0.5),
+                    }).then(function (dataSource) {
+                    if (layerType === 'all') {
+                        if (optimizationLayerAll) {
+                        // Remove the existing all layer
+                        viewer.dataSources.remove(optimizationLayerAll);
+                        }
+                        optimizationLayerAll = dataSource;
+                    } else if (layerType === 'selected') {
+                        if (optimizationLayerSelected) {
+                        // Remove the existing selected layer
+                        viewer.dataSources.remove(optimizationLayerSelected);
+                        }
+                        optimizationLayerSelected = dataSource;
+                    }
+                    viewer.dataSources.add(dataSource);
+                    // viewer.zoomTo(dataSource);
+                    }).otherwise(function (error) {
+                    console.error(error);
+                    });
+                }
+
                 function handleLayerMessage(payload, layerName, toggleId) {
+                    // Remove any existing layer with the same name
+                    const layers = viewer.scene.imageryLayers;
+                    for (let i = layers.length - 1; i >= 0; i--) {
+                        const existingLayer = layers.get(i);
+                        if (existingLayer.layerName === layerName) {
+                            layers.remove(existingLayer, true);
+                        }
+                    }
+
                     console.log('Handling layer message:', layerName);
                     let layer;
                     const checkbox = document.getElementById(toggleId);
@@ -364,11 +464,12 @@
                             new Cesium.SingleTileImageryProvider({
                                 url: layerImage,
                                 rectangle: Cesium.Rectangle.fromDegrees(
-                                    payload.top_left[0], payload.bottom_right[1], 
+                                    payload.top_left[0], payload.bottom_right[1],
                                     payload.bottom_right[0], payload.top_left[1]
                                 )
                             })
                         );
+                        layer.layerName = layerName;
                         viewer.scene.imageryLayers.add(layer);
                     }
 
@@ -386,27 +487,10 @@
                                     )
                                 })
                             );
+                            layer.layerName = layerName;
                             viewer.scene.imageryLayers.add(layer);
                         }
                     });
-
-                    return function updateLayer(newPayload) {
-                        const newLayerImage = `data:image/png;base64,${newPayload[layerName]}`;
-                        const newLayer = new Cesium.ImageryLayer(
-                            new Cesium.SingleTileImageryProvider({
-                                url: newLayerImage,
-                                rectangle: Cesium.Rectangle.fromDegrees(
-                                    newPayload.top_left[0], newPayload.bottom_right[1], 
-                                    newPayload.bottom_right[0], newPayload.top_left[1]
-                                )
-                            })
-                        );
-                        viewer.scene.imageryLayers.remove(layer);
-                        layer = newLayer;
-                        viewer.scene.imageryLayers.add(layer);
-                        console.log('Layer updated.');
-                        layer.show = checkbox.checked;
-                    };
                 }
                 // Handle the WebSocket connection and events
                 const tls = window.location.protocol === "https:";
