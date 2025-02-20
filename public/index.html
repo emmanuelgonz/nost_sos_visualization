@@ -345,11 +345,11 @@
                         handleLayerMessage(payload, 'gcom_layer', 'toggleGcomLayer');
                     } else if (topic === "sos.capella.layer") {
                         handleLayerMessage(payload, 'capella_layer', 'toggleCapellaLayer');
-                    } else if (topic === "sos.swe_change.layer") {
+                    } else if (topic === "sos.planner.layer") {
                         handleLayerMessage(payload, 'swe_change_layer', 'toggleSweChangeLayer');
-                    } else if (topic === "sos.swe_change.all") {
+                    } else if (topic === "sos.planner.all") {
                         handleIncomingMessage(payload, "all");
-                    } else if (topic === "sos.swe_change.selected") {
+                    } else if (topic === "sos.planner.selected") {
                         handleIncomingMessage(payload, "selected");
                     }
                 }
