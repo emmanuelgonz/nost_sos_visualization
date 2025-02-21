@@ -357,6 +357,10 @@
                     // Get the appropriate checkbox and data source reference
                     const toggleId = layerType === 'all' ? 'toggleOptimizationLayerAll' : 'toggleOptimizationLayerSelected';
                     const checkbox = document.getElementById(toggleId);
+                    
+                    // Debug logging
+                    console.log(`Processing ${layerType} layer`);
+                    console.log(`Current optimizationLayerSelected:`, optimizationLayerSelected);
 
                     // Parse and process the message regardless of checkbox state
                     const geoJsonData = JSON.parse(payload.vector_layer);
@@ -388,16 +392,17 @@
                         }
 
                         // Remove only the corresponding previous layer
-                        if (layerType === 'all' && optimizationLayerAll) {
-                            viewer.dataSources.remove(optimizationLayerAll);
-                        } else if (layerType === 'selected' && optimizationLayerSelected) {
-                            viewer.dataSources.remove(optimizationLayerSelected);
-                        }
-
-                        // Store reference to the new data source
                         if (layerType === 'all') {
+                            if (optimizationLayerAll) {
+                                console.log('Removing previous all layer');
+                                viewer.dataSources.remove(optimizationLayerAll);
+                            }
                             optimizationLayerAll = loadedDataSource;
                         } else {
+                            if (optimizationLayerSelected) {
+                                console.log('Removing previous selected layer');
+                                viewer.dataSources.remove(optimizationLayerSelected);
+                            }
                             optimizationLayerSelected = loadedDataSource;
                         }
 
@@ -407,7 +412,8 @@
                         }
 
                         // Update checkbox event listener
-                        checkbox.addEventListener('change', function() {
+                        checkbox.removeEventListener('change', checkbox.changeHandler); // Remove old listener
+                        checkbox.changeHandler = function() { // Store reference to handler
                             if (loadedDataSource) {
                                 if (this.checked) {
                                     viewer.dataSources.add(loadedDataSource);
@@ -415,7 +421,8 @@
                                     viewer.dataSources.remove(loadedDataSource);
                                 }
                             }
-                        });
+                        };
+                        checkbox.addEventListener('change', checkbox.changeHandler);
                     }).otherwise(function (error) {
                         console.error('Error loading GeoJSON:', error);
                     });
